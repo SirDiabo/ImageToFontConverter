@@ -1,0 +1,365 @@
+<Window x:Class="ImageToFontConverter.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Image to Font Converter" 
+        Height="1000" 
+        Width="700"
+        ResizeMode="CanResize"
+        WindowStartupLocation="CenterScreen"
+        Background="#0B0D0F">
+
+    <Window.Resources>
+        <!-- Modern Color Palette -->
+        <SolidColorBrush x:Key="PrimaryColor" Color="#1D4ED8"/>
+        <SolidColorBrush x:Key="PrimaryHoverColor" Color="#1D4ED8"/>
+        <SolidColorBrush x:Key="SecondaryColor" Color="#64748B"/>
+        <SolidColorBrush x:Key="DangerColor" Color="#DC2626"/>
+        <SolidColorBrush x:Key="DangerHoverColor" Color="#B91C1C"/>
+        <SolidColorBrush x:Key="BackgroundColor" Color="#323C46"/>
+        <SolidColorBrush x:Key="BorderColor" Color="#1E242B"/>
+        <SolidColorBrush x:Key="TextColor" Color="#DDE2E7"/>
+        <SolidColorBrush x:Key="TextSecondaryColor" Color="#C2CAD3"/>
+
+        <!-- Card Style -->
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource BackgroundColor}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="24"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="20" 
+                                    ShadowDepth="2" 
+                                    Opacity="0.08" 
+                                    Color="#000000"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Modern Button Style -->
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
+            <Setter Property="Foreground" Value="#1E242B"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="24,12"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource PrimaryHoverColor}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Secondary Button Style -->
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#1E242B"/>
+            <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="16,10"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#2E3842"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Danger Button Style -->
+        <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
+            <Setter Property="Foreground" Value="{StaticResource DangerColor}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource DangerColor}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource DangerColor}"/>
+                                <Setter Property="Foreground" Value="#1E242B"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Modern TextBox Style -->
+        <Style x:Key="ModernTextBox" TargetType="TextBox">
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="#1E242B"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ScrollViewer x:Name="PART_ContentHost" 
+                                        Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource PrimaryColor}"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource PrimaryColor}"/>
+                                <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Modern Label Style -->
+        <Style x:Key="ModernLabel" TargetType="Label">
+            <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
+
+        <!-- Modern Slider Style -->
+        <Style x:Key="ModernSlider" TargetType="Slider">
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Margin" Value="0,8,0,0"/>
+        </Style>
+
+        <!-- Modern ProgressBar Style -->
+        <Style x:Key="ModernProgressBar" TargetType="ProgressBar">
+            <Setter Property="Height" Value="8"/>
+            <Setter Property="Background" Value="#E2E8F0"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryColor}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ProgressBar">
+                        <Grid>
+                            <Border Background="{TemplateBinding Background}"
+                                    CornerRadius="4"/>
+                            <Border x:Name="PART_Track"
+                                    CornerRadius="4">
+                                <Border x:Name="PART_Indicator"
+                                        Background="{TemplateBinding Foreground}"
+                                        CornerRadius="4"
+                                        HorizontalAlignment="Left"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                      Padding="32">
+            <StackPanel MaxWidth="640">
+                <!-- Header -->
+                <TextBlock Text="Image to Font Converter" 
+                          FontSize="28" 
+                          FontWeight="Bold" 
+                          Foreground="{StaticResource TextColor}"
+                          Margin="0,0,0,8"/>
+                <TextBlock Text="Convert PNG images to TrueType font files" 
+                          FontSize="14" 
+                          Foreground="{StaticResource TextSecondaryColor}"
+                          Margin="0,0,0,32"/>
+
+                <!-- Folder Selection Card -->
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <Label Content="Select Folder" Style="{StaticResource ModernLabel}"/>
+                        <TextBlock Text="Choose a folder containing your PNG glyph images" 
+                                  FontSize="12" 
+                                  Foreground="{StaticResource TextSecondaryColor}"
+                                  Margin="0,0,0,12"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox Grid.Column="0" 
+                                    Name="FolderPathTextBox" 
+                                    Style="{StaticResource ModernTextBox}"
+                                    Foreground="#D5DBE2"
+                                    IsReadOnly="True"
+                                    Margin="0,0,8,0"/>
+                            <Button Grid.Column="1" 
+                                    Name="BrowseButton" 
+                                    Content="Browse" 
+                                    Margin="0,0,8,0"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Width="80"
+                                    Click="BrowseButton_Click"/>
+                            <Button Grid.Column="2" 
+                                    Name="OpenFolderButton" 
+                                    Content="Open" 
+                                    Style="{StaticResource SecondaryButton}"
+                                    Width="80"
+                                    Click="OpenFolderButton_Click"/>
+                        </Grid>
+
+                        <!-- Glyphs found summary -->
+                        <TextBlock Name="GlyphsFoundTextBlock"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextSecondaryColor}"
+                                   Margin="0,8,0,0"
+                                   Visibility="Collapsed"
+                                   Cursor="Hand"
+                                   TextDecorations="Underline"
+                                   MouseLeftButtonUp="GlyphsFoundTextBlock_MouseLeftButtonUp"
+                                   ToolTip="Click to view detailed glyph list"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Font Configuration Card -->
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <Label Content="Font Configuration" Style="{StaticResource ModernLabel}"/>
+
+                        <!-- Font Name -->
+                        <Label Content="Font Name" 
+                              FontSize="12" 
+                              Foreground="{StaticResource TextSecondaryColor}"
+                              Margin="0,12,0,6"/>
+                        <TextBox Name="FontNameTextBox"
+                                Style="{StaticResource ModernTextBox}"
+                                Foreground="#D5DBE2"
+                                Text="Custom Font"/>
+
+                        <!-- Simplification -->
+                        <Label Name="SimplificationLabel" 
+                              Content="Simplification: 0.0100" 
+                              FontSize="12" 
+                              Foreground="{StaticResource TextSecondaryColor}"
+                              Margin="0,20,0,6"/>
+                        <TextBlock Text="Lower values preserve more detail, higher values simplify shapes" 
+                                  FontSize="11" 
+                                  Foreground="{StaticResource TextSecondaryColor}"
+                                  Margin="0,0,0,8"/>
+                        <Slider Name="SimplificationSlider"
+                               Style="{StaticResource ModernSlider}"
+                               Minimum="0.00001" 
+                               Maximum="0.02" 
+                               Value="0.0001"
+                               ValueChanged="SimplificationSlider_ValueChanged"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Actions Card -->
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button Grid.Column="0" 
+                                    Name="ConvertButton" 
+                                    Content="Convert to Font" 
+                                    Style="{StaticResource PrimaryButton}"
+                                    Height="44"
+                                    Margin="0,0,8,0"
+                                    Click="ConvertButton_Click"/>
+                            <Button Grid.Column="1" 
+                                    Name="CancelButton" 
+                                    Content="Cancel" 
+                                    Style="{StaticResource DangerButton}"
+                                    Height="44"
+                                    Margin="8,0,0,0"
+                                    IsEnabled="False" 
+                                    Click="CancelButton_Click"/>
+                        </Grid>
+
+                        <!-- Progress Bar -->
+                        <ProgressBar Name="ProgressBar" 
+                                    Style="{StaticResource ModernProgressBar}"
+                                    Margin="0,20,0,12"/>
+
+                        <!-- Status -->
+                        <Border Background="#1E242B" 
+                               BorderBrush="{StaticResource BorderColor}"
+                               BorderThickness="1"
+                               CornerRadius="6"
+                               Padding="12"
+                               MinHeight="60">
+                            <TextBlock Name="StatusTextBlock" 
+                                      TextWrapping="Wrap" 
+                                      FontSize="12"
+                                      Foreground="{StaticResource TextSecondaryColor}"
+                                      VerticalAlignment="Center"
+                                      Text="Ready to convert. Select a folder to begin."/>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- Quit Button -->
+                <Button Content="Quit Application" 
+                       Style="{StaticResource SecondaryButton}"
+                       HorizontalAlignment="Stretch"
+                       Height="40"
+                       Click="QuitButton_Click"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
