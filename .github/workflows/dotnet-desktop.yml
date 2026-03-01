@@ -8,9 +8,9 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
+  build-debug:
+    name: Build (Debug)
     runs-on: windows-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,7 +23,6 @@ jobs:
       - name: Restore
         run: dotnet restore
 
-      # Debug
       - name: Publish (Debug)
         run: >
           dotnet publish ImageToFontConverter.csproj
@@ -42,7 +41,21 @@ jobs:
           path: publish/debug/ImageToFontConverter.exe
           if-no-files-found: error
 
-      # Release
+  build-release:
+    name: Build (Release)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore
+        run: dotnet restore
+
       - name: Publish (Release)
         run: >
           dotnet publish ImageToFontConverter.csproj
