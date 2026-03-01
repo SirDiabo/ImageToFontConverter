@@ -20,6 +20,7 @@ namespace ImageToFontConverter
             BuildGlyphList(folderPath);
         }
 
+        public string SummaryText { get; private set; }
         private void BuildGlyphList(string folderPath)
         {
             var glyphUnicodeMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
@@ -127,6 +128,9 @@ namespace ImageToFontConverter
 
                 Glyphs.Add(entry);
             }
+            int total = Glyphs.Count;
+            int found = Glyphs.Count(g => g.HasImage);
+            SummaryText = $"{found} of {total} glyphs found  ·  {total - found} missing";
         }
 
         private ImageSource LoadImageIfExists(string folderPath, string baseName)

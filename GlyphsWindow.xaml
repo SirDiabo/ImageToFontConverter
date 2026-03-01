@@ -3,83 +3,43 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:ImageToFontConverter"
         Title="Glyph List"
-        Width="1200"
-        Height="800"
+        Width="1350"
+        Height="820"
         WindowStartupLocation="CenterOwner"
         Background="#0B0D0F">
     <Window.Resources>
-        <SolidColorBrush x:Key="PrimaryColor" Color="#1D4ED8"/>
-        <SolidColorBrush x:Key="PrimaryHoverColor" Color="#1D4ED8"/>
-        <SolidColorBrush x:Key="SecondaryColor" Color="#64748B"/>
-        <SolidColorBrush x:Key="DangerColor" Color="#DC2626"/>
-        <SolidColorBrush x:Key="DangerHoverColor" Color="#B91C1C"/>
-        <SolidColorBrush x:Key="BackgroundColor" Color="#323C46"/>
-        <SolidColorBrush x:Key="BorderColor" Color="#1E242B"/>
-        <SolidColorBrush x:Key="TextColor" Color="#DDE2E7"/>
+        <SolidColorBrush x:Key="PrimaryColor"       Color="#1D4ED8"/>
+        <SolidColorBrush x:Key="SecondaryColor"     Color="#64748B"/>
+        <SolidColorBrush x:Key="DangerColor"        Color="#DC2626"/>
+        <SolidColorBrush x:Key="BackgroundColor"    Color="#323C46"/>
+        <SolidColorBrush x:Key="BorderColor"        Color="#1E242B"/>
+        <SolidColorBrush x:Key="TextColor"          Color="#DDE2E7"/>
         <SolidColorBrush x:Key="TextSecondaryColor" Color="#C2CAD3"/>
 
-        <Style x:Key="CardStyle" TargetType="Border">
-            <Setter Property="Background" Value="{StaticResource BackgroundColor}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="12"/>
-            <Setter Property="Padding" Value="24"/>
-            <Setter Property="Margin" Value="0,0,0,20"/>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect BlurRadius="20" ShadowDepth="2" Opacity="0.08" Color="#000000"/>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="PrimaryButton" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
-            <Setter Property="Foreground" Value="#1E242B"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="24,12"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="{StaticResource PrimaryHoverColor}"/>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="border" Property="Opacity" Value="0.5"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <local:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVis"/>
 
         <Style x:Key="SecondaryButton" TargetType="Button">
-            <Setter Property="Background" Value="#1E242B"/>
-            <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="16,10"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="FontWeight" Value="Medium"/>
-            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background"       Value="#1E242B"/>
+            <Setter Property="Foreground"       Value="{StaticResource TextColor}"/>
+            <Setter Property="BorderBrush"      Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness"  Value="1"/>
+            <Setter Property="Padding"          Value="16,8"/>
+            <Setter Property="FontSize"         Value="13"/>
+            <Setter Property="FontWeight"       Value="Medium"/>
+            <Setter Property="Cursor"           Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6" Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#2E3842"/>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="border" Property="Opacity" Value="0.5"/>
+                                <Setter TargetName="bd" Property="Background" Value="#2E3842"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -87,63 +47,143 @@
             </Setter>
         </Style>
 
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <local:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
+        <!-- Glyph tile -->
+        <DataTemplate x:Key="GlyphTile">
+            <Border Width="72" Height="80" Margin="3" CornerRadius="6"
+                    Background="#1E242B" Cursor="Arrow">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="BorderBrush" Value="#2A3340"/>
+                    </Style>
+                </Border.Style>
+                <Border.ToolTip>
+                    <ToolTip Background="#1E242B" BorderBrush="#2A3340" BorderThickness="1" Padding="10,8">
+                        <StackPanel>
+                            <TextBlock Text="{Binding ExpectedFileDisplay}" Foreground="#DDE2E7" FontWeight="SemiBold" FontSize="13"/>
+                            <TextBlock Text="{Binding Description}"         Foreground="#C2CAD3" FontSize="12" Margin="0,2,0,0"/>
+                            <TextBlock Text="{Binding StatusText}"          Foreground="{Binding ForegroundBrush}" FontSize="12" Margin="0,4,0,0" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </ToolTip>
+                </Border.ToolTip>
+                <Grid>
+                    <!-- Found/missing indicator strip at top -->
+                    <Border VerticalAlignment="Top" Height="3" CornerRadius="6,6,0,0">
+                        <Border.Background>
+                            <Binding Path="HasImage">
+                                <Binding.Converter>
+                                    <local:InverseBooleanToVisibilityConverter/>
+                                </Binding.Converter>
+                            </Binding>
+                        </Border.Background>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasImage}" Value="True">
+                                        <Setter Property="Background" Value="#16A34A"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding HasImage}" Value="False">
+                                        <Setter Property="Background" Value="#DC2626"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                    </Border>
+
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,6,4,4">
+                        <!-- Preview area -->
+                        <Border Width="40" Height="40" CornerRadius="4" HorizontalAlignment="Center"
+                                Background="#2D3640">
+                            <Grid>
+                                <!-- Show PNG if found -->
+                                <Image Source="{Binding Image}" Stretch="Uniform" Margin="3"
+                                       Visibility="{Binding HasImage, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                <!-- Show unicode char if missing -->
+                                <TextBlock Text="{Binding DisplayChar}"
+                                           Foreground="#5A6A7A" FontSize="20"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           Visibility="{Binding HasImage, Converter={StaticResource InverseBoolToVis}}"/>
+                            </Grid>
+                        </Border>
+                        <!-- Filename label -->
+                        <TextBlock Text="{Binding ExpectedName}"
+                                   Foreground="{Binding ForegroundBrush}"
+                                   FontSize="9" TextAlignment="Center"
+                                   TextTrimming="CharacterEllipsis"
+                                   MaxWidth="68" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </DataTemplate>
 
         <CollectionViewSource x:Key="GroupedGlyphs" Source="{Binding Glyphs}">
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="Category"/>
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
-
-        <DataTemplate x:Key="GlyphTemplate">
-            <Border Width="220" Height="120" Margin="6" Background="#1E242B" Padding="8" CornerRadius="8">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="68"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Border Width="56" Height="56" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#c6c6c6" CornerRadius="4">
-                        <Grid>
-                            <Image Source="{Binding Image}" Stretch="Uniform" Visibility="{Binding HasImage, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                            <TextBlock Text="{Binding DisplayChar}" Foreground="{Binding ForegroundBrush}" FontSize="28" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding HasImage, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
-                        </Grid>
-                    </Border>
-                    <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
-                        <TextBlock Text="{Binding ExpectedName}" Foreground="{Binding ForegroundBrush}" FontWeight="Bold"/>
-                        <TextBlock Text="{Binding Description}" Foreground="#C2CAD3" FontSize="12" Margin="0,4,0,0"/>
-                        <TextBlock Text="{Binding ExpectedFileDisplay}" Foreground="#C2CAD3" FontSize="12" Margin="0,6,0,0"/>
-                        <TextBlock Text="{Binding StatusText}" Foreground="{Binding ForegroundBrush}" FontWeight="SemiBold" Margin="0,4,0,0"/>
-                    </StackPanel>
-                </Grid>
-            </Border>
-        </DataTemplate>
     </Window.Resources>
 
-    <DockPanel Margin="12">
-        <Grid DockPanel.Dock="Top" Margin="0,0,0,0" VerticalAlignment="Center">
+    <DockPanel Margin="16">
+
+        <!-- Header bar -->
+        <Grid DockPanel.Dock="Top" Margin="0,0,0,14">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-
-            <TextBlock Grid.Column="0" Text="Expected Glyphs" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextColor}" VerticalAlignment="Center"/>
-
-            <Button Grid.Column="1" Content="Close" Width="80" Height="35" Margin="12,0,0,0" Padding="12,6" VerticalAlignment="Center" Click="CloseButton_Click" Style="{StaticResource SecondaryButton}"/>
+            <StackPanel Grid.Column="0" Orientation="Vertical">
+                <TextBlock Text="Expected Glyphs" FontSize="18" FontWeight="Bold"
+                           Foreground="{StaticResource TextColor}"/>
+                <TextBlock Text="{Binding SummaryText}" FontSize="12"
+                           Foreground="{StaticResource TextSecondaryColor}" Margin="0,2,0,0"/>
+            </StackPanel>
+            <Button Grid.Column="1" Content="Close" Width="80"
+                    VerticalAlignment="Top" Click="CloseButton_Click"
+                    Style="{StaticResource SecondaryButton}"/>
         </Grid>
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,12,0,0">
-            <ItemsControl ItemsSource="{Binding Source={StaticResource GroupedGlyphs}}" ItemTemplate="{StaticResource GlyphTemplate}">
+        <!-- Glyph grid grouped by category -->
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Source={StaticResource GroupedGlyphs}}"
+                          ItemTemplate="{StaticResource GlyphTile}">
                 <ItemsControl.GroupStyle>
                     <GroupStyle>
-                        <GroupStyle.HeaderTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" FontSize="14" Margin="6,12,0,6"/>
-                            </DataTemplate>
-                        </GroupStyle.HeaderTemplate>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="GroupItem">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="GroupItem">
+                                            <StackPanel Margin="0,0,0,16">
+                                                <!-- Category header -->
+                                                <Border Background="#141A20" CornerRadius="6" Padding="12,7" Margin="0,0,0,6">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Grid.Column="0"
+                                                                   Text="{Binding Name}"
+                                                                   Foreground="#DDE2E7"
+                                                                   FontWeight="SemiBold" FontSize="13"/>
+                                                        <TextBlock Grid.Column="1"
+                                                                   Foreground="#64748B" FontSize="12"
+                                                                   VerticalAlignment="Center">
+                                                            <Run Text="{Binding ItemCount, Mode=OneWay}"/>
+                                                            <Run Text=" glyphs"/>
+                                                        </TextBlock>
+                                                    </Grid>
+                                                </Border>
+                                                <!-- Tiles wrap -->
+                                                <ItemsPresenter/>
+                                            </StackPanel>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
                         <GroupStyle.Panel>
                             <ItemsPanelTemplate>
-                                <WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
+                                <WrapPanel Orientation="Horizontal"/>
                             </ItemsPanelTemplate>
                         </GroupStyle.Panel>
                     </GroupStyle>
