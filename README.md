@@ -31,8 +31,15 @@ ImageToFontConverter is a small WPF tool (C# / .NET 9) that converts a folder of
   - `upper_A.png`, `upper_B.png`, ... → `A`..`Z`
   - `lower_a.png`, `lower_b.png`, ... → `a`..`z`
   - `0.png` .. `9.png` → digits
-  - Symbol names: `space.png`, `exclamation.png`, `questionmark.png`, `period.png`, `comma.png`, `colon.png`, `semicolon.png`, `hyphen.png`, `plus.png`, `equal.png`, `at.png`, `hash.png`, `dollar.png`, `percent.png`, `caret.png`, `ampersand.png`, `asterisk.png`, `leftparenthesis.png`, `rightparenthesis.png`, `underscore.png`, `backtick.png`, `tilde.png`, `leftbracket.png`, `rightbracket.png`, `leftbrace.png`, `rightbrace.png`, `backslash.png`, `forwardslash.png`, `verticalbar.png`, `lessthan.png`, `greaterthan.png`, `singlequote.png`, `doublequote.png`
-- `space.png` is treated specially (creates an empty glyph with a default width).
+  - **Punctuation:** `space`, `exclamation`, `questionmark`, `period`, `comma`, `colon`, `semicolon`, `hyphen`, `endash`, `emdash`, `ellipsis`, `degree`, `bullet`, `middot`
+  - **Brackets & Quotes:** `leftparenthesis`, `rightparenthesis`, `leftbracket`, `rightbracket`, `leftbrace`, `rightbrace`, `angleleft`, `angleright`, `singlequote`, `doublequote`, `backtick`
+  - **Math:** `plus`, `equal`, `caret`, `percent`, `asterisk`, `divide`, `multiply`, `plusminus`, `lessthan`, `greaterthan`
+  - **Symbols:** `at`, `hash`, `ampersand`, `underscore`, `tilde`, `backslash`, `forwardslash`, `verticalbar`, `copyright`, `trademark`, `registered`
+  - **Currency:** `dollar`, `euro`, `pound`, `yen`, `cent`
+  - **Accented lowercase:** `lower_e_acute` (é), `lower_e_grave` (è), `lower_e_circ` (ê), `lower_e_uml` (ë), `lower_a_acute` (á), `lower_a_grave` (à), `lower_a_circ` (â), `lower_a_uml` (ä), `lower_a_ring` (å), `lower_o_acute` (ó), `lower_o_circ` (ô), `lower_o_uml` (ö), `lower_u_acute` (ú), `lower_u_grave` (ù), `lower_u_uml` (ü), `lower_i_acute` (í), `lower_i_circ` (î), `lower_n_tilde` (ñ), `lower_c_cedil` (ç), `lower_ss` (ß), `lower_ae` (æ)
+  - **Accented uppercase:** `upper_A_uml` (Ä), `upper_O_uml` (Ö), `upper_U_uml` (Ü), `upper_A_grave` (À), `upper_A_ring` (Å), `upper_E_acute` (É), `upper_N_tilde` (Ñ), `upper_C_cedil` (Ç), `upper_AE` (Æ)
+- `space.png` is treated specially — it creates an empty glyph with a default advance width; the image content is ignored.
+- Accented characters use compound filenames like `lower_e_acute.png` for é, `lower_ss.png` for ß, `upper_AE.png` for Æ, and so on. The table above lists all supported names with their corresponding characters.
 
 Tip: use clean, high-contrast alpha masks (opaque glyph area, transparent background) for best tracing results.
 

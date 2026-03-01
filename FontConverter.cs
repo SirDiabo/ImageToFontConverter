@@ -17,25 +17,44 @@ namespace ImageToFontConverter
     {
         public static readonly string[] ExpectedGlyphs =
         {
-            // Uppercase letters
+            // Uppercase
             "upper_A", "upper_B", "upper_C", "upper_D", "upper_E", "upper_F", "upper_G", "upper_H",
             "upper_I", "upper_J", "upper_K", "upper_L", "upper_M", "upper_N", "upper_O", "upper_P",
             "upper_Q", "upper_R", "upper_S", "upper_T", "upper_U", "upper_V", "upper_W", "upper_X",
             "upper_Y", "upper_Z",
-            // Lowercase letters
+            // Lowercase
             "lower_a", "lower_b", "lower_c", "lower_d", "lower_e", "lower_f", "lower_g", "lower_h",
             "lower_i", "lower_j", "lower_k", "lower_l", "lower_m", "lower_n", "lower_o", "lower_p",
             "lower_q", "lower_r", "lower_s", "lower_t", "lower_u", "lower_v", "lower_w", "lower_x",
             "lower_y", "lower_z",
             // Numbers
             "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+            // Punctuation
+            "space", "exclamation", "questionmark", "period", "comma", "colon", "semicolon", 
+            "hyphen", "endash", "emdash", "ellipsis", "degree", "bullet", "middot", 
+            // Brackets & Quotes
+            "leftparenthesis", "rightparenthesis", "leftbracket", "rightbracket", 
+            "leftbrace", "rightbrace", "angleleft", "angleright", 
+            "singlequote", "doublequote", "backtick", 
+            // Math
+            "plus", "equal", "caret", "percent", "asterisk", "divide", "multiply", "plusminus", 
+            "lessthan", "greaterthan", 
             // Symbols
-            "space", "exclamation", "questionmark", "period", "comma", "colon", "semicolon",
-            "hyphen", "plus", "equal", "at", "hash", "dollar", "percent", "caret",
-            "ampersand", "asterisk", "leftparenthesis", "rightparenthesis",
-            "underscore", "backtick", "tilde", "leftbracket", "rightbracket",
-            "leftbrace", "rightbrace", "backslash", "forwardslash", "verticalbar",
-            "lessthan", "greaterthan", "singlequote", "doublequote"
+            "at", "hash", "ampersand", "underscore", "tilde", "backslash", "forwardslash", "verticalbar", 
+            "copyright", "trademark", "registered", 
+            // Currency
+            "dollar", "euro", "pound", "yen", "cent", 
+            // Accented Lowercase
+            "lower_e_acute", "lower_e_grave", "lower_e_circ", "lower_e_uml", 
+            "lower_a_acute", "lower_a_grave", "lower_a_circ", "lower_a_uml", "lower_a_ring", 
+            "lower_o_acute", "lower_o_circ", "lower_o_uml", 
+            "lower_u_acute", "lower_u_grave", "lower_u_uml", 
+            "lower_i_acute", "lower_i_circ", 
+            "lower_n_tilde", "lower_c_cedil", "lower_ss", "lower_ae", 
+            // Accented Uppercase
+            "upper_A_uml", "upper_O_uml", "upper_U_uml", 
+            "upper_A_grave", "upper_A_ring", "upper_E_acute", 
+            "upper_N_tilde", "upper_C_cedil", "upper_AE", 
         };
 
         // Static method that can be used by both FontConverter and MainWindow
@@ -485,14 +504,30 @@ try:
         
         symbol_map = {{
             'space': 32, 'exclamation': 33, 'questionmark': 63, 'period': 46, 'comma': 44,
-            'colon': 58, 'semicolon': 59, 'hyphen': 45, 'plus': 43,
-            'equal': 61, 'at': 64, 'hash': 35, 'dollar': 36,
-            'percent': 37, 'caret': 94, 'ampersand': 38, 'asterisk': 42,
-            'leftparenthesis': 40, 'rightparenthesis': 41, 'underscore': 95,
-            'backtick': 96, 'tilde': 126, 'leftbracket': 91,
+            'colon': 58, 'semicolon': 59, 'hyphen': 45, 'endash': 8211, 'emdash': 8212,
+            'ellipsis': 8230, 'degree': 176, 'bullet': 8226, 'middot': 183,
+            'leftparenthesis': 40, 'rightparenthesis': 41, 'leftbracket': 91,
             'rightbracket': 93, 'leftbrace': 123, 'rightbrace': 125,
-            'backslash': 92, 'forwardslash': 47, 'verticalbar': 124,
-            'lessthan': 60, 'greaterthan': 62, 'singlequote': 39, 'doublequote': 34
+            'angleleft': 171, 'angleright': 187,
+            'singlequote': 39, 'doublequote': 34, 'backtick': 96,
+            'plus': 43, 'equal': 61, 'caret': 94, 'percent': 37, 'asterisk': 42,
+            'divide': 247, 'multiply': 215, 'plusminus': 177,
+            'lessthan': 60, 'greaterthan': 62,
+            'at': 64, 'hash': 35, 'ampersand': 38, 'underscore': 95,
+            'tilde': 126, 'backslash': 92, 'forwardslash': 47, 'verticalbar': 124,
+            'copyright': 169, 'trademark': 8482, 'registered': 174,
+            'dollar': 36, 'euro': 8364, 'pound': 163, 'yen': 165, 'cent': 162,
+        }}
+        accented_map = {{
+            'lower_e_acute': 233, 'lower_e_grave': 232, 'lower_e_circ': 234, 'lower_e_uml': 235,
+            'lower_a_acute': 225, 'lower_a_grave': 224, 'lower_a_circ': 226, 'lower_a_uml': 228, 'lower_a_ring': 229,
+            'lower_o_acute': 243, 'lower_o_circ': 244, 'lower_o_uml': 246,
+            'lower_u_acute': 250, 'lower_u_grave': 249, 'lower_u_uml': 252,
+            'lower_i_acute': 237, 'lower_i_circ': 238,
+            'lower_n_tilde': 241, 'lower_c_cedil': 231, 'lower_ss': 223, 'lower_ae': 230,
+            'upper_A_uml': 196, 'upper_O_uml': 214, 'upper_U_uml': 220,
+            'upper_A_grave': 192, 'upper_A_ring': 197, 'upper_E_acute': 201,
+            'upper_N_tilde': 209, 'upper_C_cedil': 199, 'upper_AE': 198,
         }}
 
         svg_files = [f for f in os.listdir('{escapedInputFolder}') if f.endswith('.svg')]
@@ -510,10 +545,12 @@ try:
                 char_name = os.path.splitext(file)[0]
 
                 unicode_value = None
-                if char_name.startswith('upper_'):
-                    unicode_value = ord(char_name.split('_')[1].upper())
-                elif char_name.startswith('lower_'):
-                    unicode_value = ord(char_name.split('_')[1].lower())
+                if char_name in accented_map:
+                    unicode_value = accented_map[char_name]
+                elif char_name.startswith('upper_') and len(char_name) == 7:
+                    unicode_value = ord(char_name[6].upper())
+                elif char_name.startswith('lower_') and len(char_name) == 7:
+                    unicode_value = ord(char_name[6].lower())
                 elif char_name.isdigit():
                     unicode_value = ord(char_name)
                 elif char_name in symbol_map:
