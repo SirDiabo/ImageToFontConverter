@@ -103,7 +103,7 @@
                         <ColumnDefinition Width="68"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Border Width="56" Height="56" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#0B0D0F" CornerRadius="4">
+                    <Border Width="56" Height="56" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#c6c6c6" CornerRadius="4">
                         <Grid>
                             <Image Source="{Binding Image}" Stretch="Uniform" Visibility="{Binding HasImage, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                             <TextBlock Text="{Binding DisplayChar}" Foreground="{Binding ForegroundBrush}" FontSize="28" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding HasImage, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>

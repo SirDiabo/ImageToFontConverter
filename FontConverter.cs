@@ -38,19 +38,6 @@ namespace ImageToFontConverter
             "lessthan", "greaterthan", "singlequote", "doublequote"
         };
 
-        private readonly Dictionary<string, int> _symbolMap = new Dictionary<string, int>
-        {
-            {"space", 32}, {"exclamation", 33}, {"questionmark", 63}, {"period", 46}, {"comma", 44},
-            {"colon", 58}, {"semicolon", 59}, {"hyphen", 45}, {"plus", 43},
-            {"equal", 61}, {"at", 64}, {"hash", 35}, {"dollar", 36},
-            {"percent", 37}, {"caret", 94}, {"ampersand", 38}, {"asterisk", 42},
-            {"leftparenthesis", 40}, {"rightparenthesis", 41}, {"underscore", 95},
-            {"backtick", 96}, {"tilde", 126}, {"leftbracket", 91},
-            {"rightbracket", 93}, {"leftbrace", 123}, {"rightbrace", 125},
-            {"backslash", 92}, {"forwardslash", 47}, {"verticalbar", 124},
-            {"lessthan", 60}, {"greaterthan", 62}, {"singlequote", 39}, {"doublequote", 34}
-        };
-
         // Static method that can be used by both FontConverter and MainWindow
         public static string FindFontForgeExecutable()
         {
