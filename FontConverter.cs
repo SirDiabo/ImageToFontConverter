@@ -472,167 +472,128 @@ namespace ImageToFontConverter
 
             return $@"
 import fontforge
+import psMat
 import os
 import sys
-import traceback
+import xml.etree.ElementTree as ET
 
-def log_message(message):
-    print(message)
-    sys.stdout.flush()
+def log(msg):
+    print(msg); sys.stdout.flush()
 
-def update_progress(progress, message):
-    sys.stdout.write(f'PROGRESS:{{progress:.2f}}|{{message}}\n')
-    sys.stdout.flush()
+def progress(p, msg):
+    sys.stdout.write(f'PROGRESS:{{p:.2f}}|{{msg}}\n'); sys.stdout.flush()
 
 try:
-    log_message('Starting font generation process...')
-
     font = fontforge.font()
+    font.encoding = 'UnicodeFull'
+    font.fontname = '{escapedFontName}'.replace(' ', '')
+    font.familyname = '{escapedFontName}'
+    font.fullname = '{escapedFontName}'
+    font.version = '1.0'
+    font.copyright = 'Custom Font'
 
-    try:
-        font.encoding = 'UnicodeFull'
-        font.fontname = '{escapedFontName}'.replace(' ', '')
-        font.familyname = '{escapedFontName}'
-        font.fullname = '{escapedFontName}'
-        font.version = '1.0'
-        font.copyright = 'Custom Font'
-        
-        em_size = 1000
-        font.em = em_size
-        font.ascent = int(em_size * 0.2)
-        font.descent = int(em_size * 0.2)
-        
-        symbol_map = {{
-            'space': 32, 'exclamation': 33, 'questionmark': 63, 'period': 46, 'comma': 44,
-            'colon': 58, 'semicolon': 59, 'hyphen': 45, 'endash': 8211, 'emdash': 8212,
-            'ellipsis': 8230, 'degree': 176, 'bullet': 8226, 'middot': 183,
-            'leftparenthesis': 40, 'rightparenthesis': 41, 'leftbracket': 91,
-            'rightbracket': 93, 'leftbrace': 123, 'rightbrace': 125,
-            'angleleft': 171, 'angleright': 187,
-            'singlequote': 39, 'doublequote': 34, 'backtick': 96,
-            'plus': 43, 'equal': 61, 'caret': 94, 'percent': 37, 'asterisk': 42,
-            'divide': 247, 'multiply': 215, 'plusminus': 177,
-            'lessthan': 60, 'greaterthan': 62,
-            'at': 64, 'hash': 35, 'ampersand': 38, 'underscore': 95,
-            'tilde': 126, 'backslash': 92, 'forwardslash': 47, 'verticalbar': 124,
-            'copyright': 169, 'trademark': 8482, 'registered': 174,
-            'dollar': 36, 'euro': 8364, 'pound': 163, 'yen': 165, 'cent': 162,
-        }}
-        accented_map = {{
-            'lower_e_acute': 233, 'lower_e_grave': 232, 'lower_e_circ': 234, 'lower_e_uml': 235,
-            'lower_a_acute': 225, 'lower_a_grave': 224, 'lower_a_circ': 226, 'lower_a_uml': 228, 'lower_a_ring': 229,
-            'lower_o_acute': 243, 'lower_o_circ': 244, 'lower_o_uml': 246,
-            'lower_u_acute': 250, 'lower_u_grave': 249, 'lower_u_uml': 252,
-            'lower_i_acute': 237, 'lower_i_circ': 238,
-            'lower_n_tilde': 241, 'lower_c_cedil': 231, 'lower_ss': 223, 'lower_ae': 230,
-            'upper_A_uml': 196, 'upper_O_uml': 214, 'upper_U_uml': 220,
-            'upper_A_grave': 192, 'upper_A_ring': 197, 'upper_E_acute': 201,
-            'upper_N_tilde': 209, 'upper_C_cedil': 199, 'upper_AE': 198,
-        }}
+    em_size = 1000
+    font.em = em_size
+    font.ascent = 800
+    font.descent = 200
 
-        svg_files = [f for f in os.listdir('{escapedInputFolder}') if f.endswith('.svg')]
-        total_files = len(svg_files)
+    symbol_map = {{
+        'space': 32, 'exclamation': 33, 'questionmark': 63, 'period': 46, 'comma': 44,
+        'colon': 58, 'semicolon': 59, 'hyphen': 45, 'endash': 8211, 'emdash': 8212,
+        'ellipsis': 8230, 'degree': 176, 'bullet': 8226, 'middot': 183,
+        'leftparenthesis': 40, 'rightparenthesis': 41, 'leftbracket': 91,
+        'rightbracket': 93, 'leftbrace': 123, 'rightbrace': 125,
+        'angleleft': 171, 'angleright': 187,
+        'singlequote': 39, 'doublequote': 34, 'backtick': 96,
+        'plus': 43, 'equal': 61, 'caret': 94, 'percent': 37, 'asterisk': 42,
+        'divide': 247, 'multiply': 215, 'plusminus': 177,
+        'lessthan': 60, 'greaterthan': 62,
+        'at': 64, 'hash': 35, 'ampersand': 38, 'underscore': 95,
+        'tilde': 126, 'backslash': 92, 'forwardslash': 47, 'verticalbar': 124,
+        'copyright': 169, 'trademark': 8482, 'registered': 174,
+        'dollar': 36, 'euro': 8364, 'pound': 163, 'yen': 165, 'cent': 162,
+    }}
+    accented_map = {{
+        'lower_e_acute': 233, 'lower_e_grave': 232, 'lower_e_circ': 234, 'lower_e_uml': 235,
+        'lower_a_acute': 225, 'lower_a_grave': 224, 'lower_a_circ': 226, 'lower_a_uml': 228, 'lower_a_ring': 229,
+        'lower_o_acute': 243, 'lower_o_circ': 244, 'lower_o_uml': 246,
+        'lower_u_acute': 250, 'lower_u_grave': 249, 'lower_u_uml': 252,
+        'lower_i_acute': 237, 'lower_i_circ': 238,
+        'lower_n_tilde': 241, 'lower_c_cedil': 231, 'lower_ss': 223, 'lower_ae': 230,
+        'upper_A_uml': 196, 'upper_O_uml': 214, 'upper_U_uml': 220,
+        'upper_A_grave': 192, 'upper_A_ring': 197, 'upper_E_acute': 201,
+        'upper_N_tilde': 209, 'upper_C_cedil': 199, 'upper_AE': 198,
+    }}
 
-        if total_files == 0:
-            raise Exception('No SVG files found in the input folder')
+    svg_files = [f for f in os.listdir('{escapedInputFolder}') if f.endswith('.svg')]
+    total = len(svg_files)
 
-        log_message(f'Found {{total_files}} SVG files to process')
-        glyph_count = 0
+    # Uniform scale: map SVG image height to em. All images are the same square size.
+    first_svg = ET.parse(os.path.join('{escapedInputFolder}', svg_files[0])).getroot()
+    vb = first_svg.get('viewBox', '').split()
+    svg_h = float(vb[3]) if len(vb) >= 4 else float(first_svg.get('height', em_size))
+    reference_size = 512 # Somehow the right size for all image resolutions. Don't ask me why. I'm fucking done. Kill me. I beg you.
+    scale = (em_size / reference_size) * (2/3)
 
-        for index, file in enumerate(svg_files):
-            try:
-                file_path = os.path.join('{escapedInputFolder}', file)
-                char_name = os.path.splitext(file)[0]
+    # After FontForge imports an SVG it flips Y, so SVG-bottom lands at font y=0 (baseline).
+    # We shift everything down by descent so SVG-bottom = y=-descent and SVG-top = y=ascent.
+    # This is a fixed coordinate-space correction, identical for every glyph.
+    y_offset = -font.descent
 
-                unicode_value = None
-                if char_name in accented_map:
-                    unicode_value = accented_map[char_name]
-                elif char_name.startswith('upper_') and len(char_name) == 7:
-                    unicode_value = ord(char_name[6].upper())
-                elif char_name.startswith('lower_') and len(char_name) == 7:
-                    unicode_value = ord(char_name[6].lower())
-                elif char_name.isdigit():
-                    unicode_value = ord(char_name)
-                elif char_name in symbol_map:
-                    unicode_value = symbol_map[char_name]
+    for idx, file in enumerate(svg_files):
+        try:
+            char_name = os.path.splitext(file)[0]
 
-                if unicode_value is None:
-                    log_message(f'Skipping {{file}} - couldn\'t determine Unicode value')
-                    continue
+            unicode_value = None
+            if char_name in accented_map:
+                unicode_value = accented_map[char_name]
+            elif char_name.startswith('upper_') and len(char_name) == 7:
+                unicode_value = ord(char_name[6].upper())
+            elif char_name.startswith('lower_') and len(char_name) == 7:
+                unicode_value = ord(char_name[6].lower())
+            elif char_name.isdigit():
+                unicode_value = ord(char_name)
+            elif char_name in symbol_map:
+                unicode_value = symbol_map[char_name]
 
-                log_message(f'Processing {{file}} - Unicode value: {{unicode_value}} ({{chr(unicode_value) if 32 <= unicode_value < 127 else hex(unicode_value)}})')
-
-                glyph = font.createChar(unicode_value)
-
-                if char_name == 'space':
-                    glyph.width = em_size // 8
-                    glyph_count += 1
-                    log_message(f'Space character created with width {{glyph.width}}')
-                    continue
-
-                # Import the SVG
-                glyph.importOutlines(file_path)
-                
-                glyph.correctDirection()
-                glyph.removeOverlap()
-                glyph.simplify()
-                glyph.left_side_bearing = glyph.right_side_bearing = em_size // 50
-
-                glyph_count += 1
-                progress = (index + 1) / total_files * 90
-                update_progress(progress, f'Processed glyph: {{chr(unicode_value) if 32 <= unicode_value < 127 else hex(unicode_value)}}')
-
-            except Exception as e:
-                log_message(f'Error processing glyph {{file}}: {{str(e)}}')
-                log_message(traceback.format_exc())
+            if unicode_value is None:
                 continue
 
-        if glyph_count == 0:
-            raise Exception('No glyphs were successfully added to the font')
+            progress(50 + (idx / total * 45), f'Processing: {{char_name}}')
 
-        log_message(f'Successfully added {{glyph_count}} glyphs to the font')
+            glyph = font.createChar(unicode_value)
 
-        # Set font metrics
-        font.os2_winascent = font.ascent
-        font.os2_windescent = font.descent
-        font.os2_typoascent = font.ascent
-        font.os2_typodescent = -font.descent
-        font.os2_typolinegap = 0
-        font.hhea_ascent = font.ascent
-        font.hhea_descent = -font.descent
-        font.hhea_linegap = 0
+            if char_name == 'space':
+                glyph.width = em_size // 4
+                continue
 
-        update_progress(95, 'Generating font file...')
+            glyph.importOutlines(os.path.join('{escapedInputFolder}', file))
+            glyph.correctDirection()
+            glyph.removeOverlap()
 
-        font.generate('{escapedOutputPath}')
+            # Scale to em, then apply fixed coordinate-space offset. Nothing else.
+            glyph.transform(psMat.compose(psMat.scale(scale), psMat.translate(0, y_offset)))
 
-        if os.path.exists('{escapedOutputPath}'):
-            file_size = os.path.getsize('{escapedOutputPath}')
-            log_message(f'Font file created successfully. Size: {{file_size}} bytes')
-        else:
-            raise Exception('Font file was not created despite no errors')
+            # Trim horizontal whitespace only
+            glyph.left_side_bearing = 50
+            glyph.right_side_bearing = 50
 
-    except Exception as e:
-        log_message(f'Error during font generation: {{str(e)}}')
-        log_message(traceback.format_exc())
-        raise
+        except Exception as e:
+            log(f'Error processing {{file}}: {{str(e)}}')
 
-    update_progress(100, f'Font generation completed! {{glyph_count}} glyphs added.')
+    font.os2_winascent = font.ascent
+    font.os2_windescent = font.descent
+    font.hhea_ascent = font.ascent
+    font.hhea_descent = -font.descent
+
+    progress(95, 'Generating font file...')
+    font.generate('{escapedOutputPath}')
+    font.close()
+    log('FONTFORGE_SCRIPT_COMPLETED')
 
 except Exception as e:
-    error_msg = f'An error occurred: {{str(e)}}'
-    log_message(error_msg)
-    traceback.print_exc()
-    update_progress(0, f'ERROR: {{error_msg}}')
+    progress(0, f'ERROR: {{str(e)}}')
     sys.exit(1)
-
-finally:
-    if 'font' in locals():
-        try:
-            font.close()
-        except Exception as e:
-            log_message(f'Error closing font object: {{str(e)}}')
-    log_message('FONTFORGE_SCRIPT_COMPLETED')
 ";
         }
     }
