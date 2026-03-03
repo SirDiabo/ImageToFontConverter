@@ -581,6 +581,17 @@ try:
         except Exception as e:
             log(f'Error processing {{file}}: {{str(e)}}')
 
+    # Map curly apostrophes/quotes to the same glyph as singlequote
+    if 39 in [font[g].unicode for g in font]:
+        src = font[39].glyphname
+        for cp, name in [(8216, ""uni2018""), (8217, ""uni2019"")]:
+            try:
+                g = font.createChar(cp, name)
+                g.addReference(src)
+                g.width = font[39].width
+            except Exception as e:
+                log(f'Error adding quote alias {{cp}}: {{str(e)}}')
+
     font.os2_winascent = font.ascent
     font.os2_windescent = font.descent
     font.hhea_ascent = font.ascent
